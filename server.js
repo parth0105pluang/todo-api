@@ -2,6 +2,7 @@ var express = require("express");
 var _= require("underscore"); 
 var app = express();
 var port = process.env.PORT||3000;
+var db = require("./db.js");
 class todoMaker{
        constructor(body) {
          this.id = body.id;
@@ -66,11 +67,24 @@ app.get("/todos/:id",function(req,res){
        
 });
 app.post("/todos",function(req,res){
-       var todoNext = new todoMaker(req.body);
+       /*var todoNext = new todoMaker(req.body);
        todos[todoNextId]= todoNext;
        console.log(req.body);
        todoNextId++;
-       res.send(req.body);
+       res.send(req.body);*/
+       var body = _.pick(req.body,"description","completed");
+       db.todo.create(body).then(function(todo){
+             res.json(todo.toJSON());
+       },function(e){
+               res.status(400).json(e);
+       });
+
+
+
+
+
+
+
 });
 app.delete("/todos/:id",function(req,res){
        var found_id = false;
@@ -108,5 +122,7 @@ app.put("/todos/:id",function(req,res){
        }
        res.send(todos);
 });
+db.sequelize.sync().then(function(){
+       app.listen(port);
+})
 
-app.listen(port);
