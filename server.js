@@ -1,8 +1,16 @@
 var express = require("express");
+var _= require("underscore"); 
 var app = express();
 var port = process.env.PORT||3000;
+class todoMaker{
+       constructor(body) {
+         this.id = body.id;
+         this.description = body.description;
+         this.completed = body.description;
+       }
+     }
 var todos=[]; 
-var todoNextId = 1;
+var todoNextId = 0;
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 /*var todos = [{
@@ -42,7 +50,8 @@ app.get("/todos/:id",function(req,res){
        
 });
 app.post("/todos",function(req,res){
-       todos[todoNextId]= req.body;
+       var todoNext = new todoMaker(req.body);
+       todos[todoNextId]= todoNext;
        console.log(req.body);
        todoNextId++;
        res.send(req.body);
