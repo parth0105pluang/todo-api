@@ -49,6 +49,7 @@ app.get("/todos",function(req,res){
        //res.end("ended");
 });
 app.get("/todos/:id",function(req,res){
+       /*
        //res.send(todos[req.params.id-1]);
        var found_id = false;
        for(var i=0;i<todos.length;i++){
@@ -64,7 +65,17 @@ app.get("/todos/:id",function(req,res){
               res.status(404).send("Not found");
              
        }
-       
+       */
+        var todoId = parseInt(req.params.id,10);
+        db.todo.findById(todoId).then(function(todo){
+          if(!!todo){
+                res.json(todo.toJSON()); 
+          }else{
+                 res.status(404).send();
+          }
+        },function(e){
+                 res.status(500).send();
+        });
 });
 app.post("/todos",function(req,res){
        /*var todoNext = new todoMaker(req.body);
