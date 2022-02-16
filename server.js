@@ -56,5 +56,20 @@ app.post("/todos",function(req,res){
        todoNextId++;
        res.send(req.body);
 });
+app.delete("/todos/:id",function(req,res){
+       var found_id = false;
+       console.log(req.params.id);
+       var req_id = req.params.id;
+       for(var i=0;i<todos.length;i++){
+              if(todos[i].id==req_id){
+                     todos.splice(i,1); 
+                     found_id = true;    
+              }
+       }
+       if(found_id==false){
+              res.status(404).send("Not exists");
+       }
+       res.send(todos);
+});
 
 app.listen(port);
