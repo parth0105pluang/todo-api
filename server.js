@@ -6,7 +6,7 @@ class todoMaker{
        constructor(body) {
          this.id = body.id;
          this.description = body.description;
-         this.completed = body.description;
+         this.completed = body.completed;
        }
      }
 var todos=[]; 
@@ -28,6 +28,21 @@ app.get("/",function(req,res){
        //res.end("ended");
 });
 app.get("/todos",function(req,res){
+       querParams = req.query;
+       var filteredTodos=[];
+       //console.log(querParams);
+       if(querParams.completed){
+              console.log('inside')
+              for(var i=0;i<todos.length;i++){
+                     console.log(todos[i].completed);
+                      if(todos[i].completed == true){
+                            console.log("true instance found");
+                            filteredTodos.push(todos[i]);
+                      }
+              }
+              res.json(filteredTodos);
+       }
+       else
        res.json(todos);
        //res.end("ended");
 });
