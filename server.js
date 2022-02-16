@@ -71,5 +71,26 @@ app.delete("/todos/:id",function(req,res){
        }
        res.send(todos);
 });
+app.put("/todos/:id",function(req,res){
+       var found_id = false;
+       console.log(req.params.id);
+       var req_id = req.params.id;
+       for(var i=0;i<todos.length;i++){
+              if(todos[i].id==req_id){
+                     found_id = true;    
+                     if(req.body.description){
+                            todos[i].description = req.body.description;
+                     }
+                     if(req.body.completed){
+                            todos[i].completed = req.body.completed;
+                     }
+                     
+              }
+       }
+       if(found_id==false){
+              res.status(404).send("Not exists");
+       }
+       res.send(todos);
+});
 
 app.listen(port);
