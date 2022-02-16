@@ -29,7 +29,7 @@ app.get("/",function(req,res){
        //res.end("ended");
 });
 app.get("/todos",function(req,res){
-       querParams = req.query;
+       /*querParams = req.query;
        var filteredTodos=[];
        //console.log(querParams);
        if(querParams.completed){
@@ -46,7 +46,24 @@ app.get("/todos",function(req,res){
        
        else
        res.json(todos);
-       //res.end("ended");
+       //res.end("ended");*/
+       var query = req.query;
+       var where = {};
+       if(query.hasOwnProperty("completed") && query.completed=="true" ){
+              where.completed = true;
+       } else if(query.hasOwnProperty("completed")&& query.completed=="false"){
+              where.completed = fasle;
+       }
+       if(query.hasOwnProperty("q")&&query.q.length>0){
+                 where.description = {
+                      $like: '%' + query.q + '%'
+                 };
+       }
+       db.todo.findAll({where:where}).then(function(todos){
+              res.json(todos);
+       },function(e){
+               res.status(500).send();
+       })
 });
 app.get("/todos/:id",function(req,res){
        /*
@@ -89,13 +106,6 @@ app.post("/todos",function(req,res){
        },function(e){
                res.status(400).json(e);
        });
-
-
-
-
-
-
-
 });
 app.delete("/todos/:id",function(req,res){
        var found_id = false;
