@@ -42,6 +42,7 @@ app.get("/todos",function(req,res){
               }
               res.json(filteredTodos);
        }
+       
        else
        res.json(todos);
        //res.end("ended");
