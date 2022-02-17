@@ -108,7 +108,25 @@ app.post("/todos",function(req,res){
        });
 });
 app.delete("/todos/:id",function(req,res){
-       var found_id = false;
+       var todoId = parseInt(req.params.id,10);
+       db.todo.destroy({
+              where:{
+                     id: todoId
+              }
+       }).then(function(rowsDeleted){
+
+              if(rowsDeleted==0){
+                     res.status(404).json({
+                           error:"No todo"
+                     });
+              }
+              else{
+                     res.status(204).send();
+              }
+       },function(){
+            res.status(500).send();
+       });
+       /*var found_id = false;
        console.log(req.params.id);
        var req_id = req.params.id;
        for(var i=0;i<todos.length;i++){
@@ -120,10 +138,34 @@ app.delete("/todos/:id",function(req,res){
        if(found_id==false){
               res.status(404).send("Not exists");
        }
-       res.send(todos);
+       res.send(todos);*/
+
 });
 app.put("/todos/:id",function(req,res){
-       var found_id = false;
+       var todoId = parseInt(req.params.id,10);
+       var body = _.pick(req.body,"description","completed");
+       var attributes = {};
+       if (body.hasOwnProperty("completed")){
+              attributes.completed = body.completed;
+       }
+       if(body.hasOwnProperty("description")){
+              attributes.description = body.description;
+       }
+       db.todo.findById(todoId).then(function(todo){
+              if(todo){
+                  return todo.update(attributes);  
+              }
+              else{
+                  res.status(404).send();   
+              }
+       },function(){
+             res.status(500).send(); 
+       }).then(function(todo){
+             res.json(todo.toJSON());
+       },function(e){
+              res.status(400).json(e);
+       });
+      /* var found_id = false;
        console.log(req.params.id);
        var req_id = req.params.id;
        for(var i=0;i<todos.length;i++){
@@ -141,7 +183,15 @@ app.put("/todos/:id",function(req,res){
        if(found_id==false){
               res.status(404).send("Not exists");
        }
-       res.send(todos);
+       res.send(todos);*/
+});
+app.post("/users",function(req,res){
+       var body = _.pick(req.body,"email","password");
+       db.user.create(body).then(function(user){
+             res.json(user.toJSON());
+       },function(e){
+               res.status(400).json(e);
+       });
 });
 db.sequelize.sync().then(function(){
        app.listen(port);
