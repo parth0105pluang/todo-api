@@ -7,7 +7,7 @@ if(env === 'production' ){
           "dialect": "postgres"
 
     });*/
-        sequelize = new Sequelize({
+        sequelize = new Sequelize(process.env.DATABASE_URL,{
         database: process.env.POSTGRES_DB,
         username: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
