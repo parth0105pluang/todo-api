@@ -3,6 +3,7 @@ var _= require("underscore");
 var app = express();
 var port = process.env.PORT||3000;
 var db = require("./db.js");
+var bcrypt = require("bcrypt");
 class todoMaker{
        constructor(body) {
          this.id = body.id;
@@ -13,6 +14,7 @@ class todoMaker{
 var todos=[]; 
 var todoNextId = 0;
 var bodyParser = require("body-parser");
+const { type } = require("express/lib/response");
 app.use(bodyParser.json());
 /*var todos = [{
        id: 101,
@@ -193,6 +195,26 @@ app.post("/users",function(req,res){
                res.status(400).json(e);
        });
 });
+app.post("/users/login",function(req,res){
+       var body = _.pick(req.body,'email','password');
+       db.user.authenticate(body).then(function(user){
+              res.json(user.toPublicJSON());
+       },function(){
+              res.status(401).send();
+       });
+       //res.json(body);
+});
+
+
+
+
+
+
+
+
+
+
+
 db.sequelize.sync().then(function(){
        app.listen(port);
 })
