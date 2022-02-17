@@ -7,25 +7,7 @@ if(env === 'production' ){
           "dialect": "postgres"
 
     });
-    const sequelize = new Sequelize({
-        database: process.env.POSTGRES_DB,
-        username: process.env.POSTGRES_USER,
-        password: process.env.POSTGRES_PASSWORD,
-        host: process.env.POSTGRES_HOST,
-        port: process.env.POSTGRES_PORT,
-        dialect: "postgres",
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
-         },
-    });
-}else{
-     sequelize = new Sequelize(undefined,undefined,undefined,{
-        "dialect": "sqlite",
-        "storage":__dirname+"/data/dev-todo-api.sqlite"
-    });
+    
 }
 var db ={};
 db.todo = sequelize.import(__dirname+"/models/todo.js");
