@@ -3,11 +3,11 @@ var env = process.env.NODE_ENV || "development";
 var sequelize;
 if(env === 'production' ){
 
-    /*sequelize = new Sequelize(process.env.DATABASE_URL,{
+    sequelize = new Sequelize(process.env.DATABASE_URL,{
           "dialect": "postgres"
 
-    });*/
-        sequelize = new Sequelize(process.env.DATABASE_URL,{
+    });
+    const sequelize = new Sequelize({
         database: process.env.POSTGRES_DB,
         username: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
@@ -19,7 +19,7 @@ if(env === 'production' ){
                 require: true,
                 rejectUnauthorized: false
             }
-         }
+         },
     });
 }else{
      sequelize = new Sequelize(undefined,undefined,undefined,{
