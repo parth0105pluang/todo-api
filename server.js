@@ -3,6 +3,7 @@ var _= require("underscore");
 var app = express();
 var port = process.env.PORT||3000;
 var db = require("./db.js");
+var middleware = require("./middleware")(db);
 var bcrypt = require("bcrypt");
 class todoMaker{
        constructor(body) {
@@ -30,7 +31,7 @@ app.get("/",function(req,res){
        res.send("TODO API ROOT");
        //res.end("ended");
 });
-app.get("/todos",function(req,res){
+app.get("/todos",middleware.requireAuthentication,function(req,res){
        /*querParams = req.query;
        var filteredTodos=[];
        //console.log(querParams);
@@ -67,7 +68,7 @@ app.get("/todos",function(req,res){
                res.status(500).send();
        })
 });
-app.get("/todos/:id",function(req,res){
+app.get("/todos/:id",middleware.requireAuthentication,function(req,res){
        /*
        //res.send(todos[req.params.id-1]);
        var found_id = false;
@@ -96,7 +97,7 @@ app.get("/todos/:id",function(req,res){
                  res.status(500).send();
         });
 });
-app.post("/todos",function(req,res){
+app.post("/todos",middleware.requireAuthentication,function(req,res){
        /*var todoNext = new todoMaker(req.body);
        todos[todoNextId]= todoNext;
        console.log(req.body);
@@ -109,7 +110,7 @@ app.post("/todos",function(req,res){
                res.status(400).json(e);
        });
 });
-app.delete("/todos/:id",function(req,res){
+app.delete("/todos/:id",middleware.requireAuthentication,function(req,res){
        var todoId = parseInt(req.params.id,10);
        db.todo.destroy({
               where:{
@@ -143,7 +144,7 @@ app.delete("/todos/:id",function(req,res){
        res.send(todos);*/
 
 });
-app.put("/todos/:id",function(req,res){
+app.put("/todos/:id",middleware.requireAuthentication,function(req,res){
        var todoId = parseInt(req.params.id,10);
        var body = _.pick(req.body,"description","completed");
        var attributes = {};
