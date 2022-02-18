@@ -16,6 +16,7 @@ var todos=[];
 var todoNextId = 0;
 var bodyParser = require("body-parser");
 const { type } = require("express/lib/response");
+const { token } = require("./db.js");
 app.use(bodyParser.json());
 /*var todos = [{
        id: 101,
@@ -217,15 +218,37 @@ app.post("/users",function(req,res){
 });
 app.post("/users/login",function(req,res){
        var body = _.pick(req.body,'email','password');
+       var userInstance;
        db.user.authenticate(body).then(function(user){
               //console.log(user.generateToken("authentication"))
-              res.header("Auth",user.generateToken("authentication")).json(user.toPublicJSON());
-       },function(){
-              res.status(401).send();
+              var token = user.generateToken("authentication");
+              userInstance = user;
+              return db.token.create({
+                    token:token
+
+              });
+              /*if(token){
+                     res.header("Auth",user.generateToken("authentication")).json(user.toPublicJSON());
+
+              }else{
+                     res.status(401).send();
+              }*/
+              
+       }).then(function(tokenInstance){
+              res.header("Auth",tokenInstance.get('token')).json(userInstance.toPublicJSON());
+              //res.header("Auth",user.generateToken("authentication")).json(user.toPublicJSON());
+       }).catch(function(){
+           res.status(401).send();
        });
        //res.json(body);
 });
-
+app.delete("/users/login",middleware.requireAuthentication,function(req,res){
+     req.token.destroy().then(function(){
+            res.status(200).send();
+     }).catch(function(){
+            res.status(500).send();
+     });
+});
 
 
 
