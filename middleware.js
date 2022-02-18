@@ -4,6 +4,7 @@ module.exports = function(db){
            var token = req.get("Auth");
            console.log(token);
            db.user.findByToken(token).then(function(user){
+                  console.log("got inside");
                   req.user = user;
                   next();
            },function(){
@@ -12,4 +13,4 @@ module.exports = function(db){
            });
       } 
  };
-}
+};
